@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TM Travel – Flotilla Sailing in the Greek Islands</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1f3c;
+    --deep-navy: #071429;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --white: #ffffff;
+    --off-white: #f8f5f0;
+    --text: #2a2a2a;
+    --text-light: #6b6b6b;
+    --border: rgba(201,168,76,0.25);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Jost',sans-serif; color:var(--text); background:var(--white); overflow-x:hidden; }
+
+  /* NAV */
+  nav { position:fixed; top:0; left:0; right:0; z-index:1000; display:flex; align-items:center; justify-content:space-between; padding:1.2rem 5%; background:rgba(7,20,41,0.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+  .nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:600; color:var(--gold); letter-spacing:0.05em; cursor:pointer; }
+  .nav-logo span { color:var(--white); }
+  .nav-links { display:flex; gap:2rem; list-style:none; align-items:center; }
+  .nav-links a { color:rgba(255,255,255,0.82); text-decoration:none; font-size:0.8rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:500; transition:color 0.2s; cursor:pointer; }
+  .nav-links a:hover { color:var(--gold); }
+  .nav-cta { background:var(--gold) !important; color:var(--navy) !important; padding:0.5rem 1.2rem !important; font-weight:600 !important; }
+  .nav-cta:hover { background:var(--gold-light) !important; }
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; }
+  .hamburger span { display:block; width:24px; height:2px; background:var(--white); transition:all 0.3s; }
+  .hamburger.open span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+  .hamburger.open span:nth-child(2) { opacity:0; }
+  .hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+  .mobile-nav { display:none; position:fixed; top:62px; left:0; right:0; z-index:999; background:rgba(7,20,41,0.98); padding:1rem 5%; border-bottom:1px solid var(--border); flex-direction:column; }
+  .mobile-nav.open { display:flex; }
+  .mobile-nav a { color:rgba(255,255,255,0.82); text-decoration:none; font-size:0.9rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:500; padding:0.9rem 0; border-bottom:1px solid rgba(255,255,255,0.07); cursor:pointer; transition:color 0.2s; }
+  .mobile-nav a:last-child { border-bottom:none; color:var(--gold); font-weight:600; }
+  .mobile-nav a:hover { color:var(--gold); }
+
+  /* PAGES */
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* BUTTONS */
+  .btn-primary { background:var(--gold); color:var(--navy); padding:0.9rem 2.2rem; font-size:0.82rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:600; border:none; cursor:pointer; transition:all 0.25s; text-decoration:none; display:inline-block; }
+  .btn-primary:hover { background:var(--gold-light); transform:translateY(-2px); }
+  .btn-outline { background:transparent; color:var(--white); padding:0.9rem 2.2rem; font-size:0.82rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:500; border:1px solid rgba(255,255,255,0.45); cursor:pointer; transition:all 0.25s; text-decoration:none; display:inline-block; }
+  .btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+
+  /* SHARED */
+  section { padding:5rem 8%; }
+  .section-label { font-size:0.7rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--gold); font-weight:500; margin-bottom:1rem; }
+  .section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,4vw,3.2rem); font-weight:400; line-height:1.2; color:var(--navy); margin-bottom:1.5rem; }
+  .section-title em { font-style:italic; color:var(--gold); }
+  .gold-divider { width:60px; height:2px; background:var(--gold); margin:1.5rem 0; }
+
+  /* PAGE HERO */
+  .page-hero { position:relative; height:58vh; overflow:hidden; margin-bottom:4rem; }
+  .page-hero img { width:100%; height:100%; object-fit:cover; object-position:center; }
+  .page-hero-overlay { position:absolute; inset:0; background:linear-gradient(160deg,rgba(7,20,41,0.78) 0%,rgba(13,31,60,0.45) 100%); display:flex; align-items:center; padding:0 8%; }
+
+  /* HOME HERO */
+  .hero-wrap { position:relative; min-height:100vh; overflow:hidden; }
+  .hero-bg {
+    position:absolute; inset:0;
+    background:
+      linear-gradient(160deg,rgba(7,20,41,0.72) 0%,rgba(13,31,60,0.48) 50%,rgba(7,20,41,0.82) 100%),
+      url('images/hero-bg.jpg') center/cover no-repeat;
+  }
+  .hero-content { position:relative; z-index:2; min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:0 8%; padding-top:5rem; }
+  .hero-eyebrow { font-size:0.75rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); font-weight:500; margin-bottom:1.5rem; opacity:0; animation:fadeUp 0.7s 0.1s ease forwards; }
+  .hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2.4rem,6vw,5.5rem); font-weight:300; line-height:1.1; color:var(--white); max-width:780px; margin-bottom:1.8rem; opacity:0; animation:fadeUp 0.7s 0.25s ease forwards; }
+  .hero-title em { font-style:italic; color:var(--gold-light); }
+  .hero-sub { font-size:clamp(0.9rem,2vw,1.05rem); color:rgba(255,255,255,0.78); max-width:520px; line-height:1.75; font-weight:300; margin-bottom:2.8rem; opacity:0; animation:fadeUp 0.7s 0.4s ease forwards; }
+  .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; opacity:0; animation:fadeUp 0.7s 0.55s ease forwards; }
+  .hero-arrow { position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; opacity:0; animation:fadeUp 0.7s 0.9s ease forwards; }
+  .arrow-line { width:1px; height:50px; background:linear-gradient(to bottom,rgba(201,168,76,0.8),transparent); }
+  .arrow-chevron { width:10px; height:10px; border-right:1px solid var(--gold); border-bottom:1px solid var(--gold); transform:rotate(45deg); margin-top:-5px; animation:bounce 2s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(5px)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+  /* FEATURES */
+  .features-strip { background:var(--navy); padding:3rem 5%; display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--border); }
+  .feature-item { padding:1.8rem; text-align:center; border-right:1px solid var(--border); }
+  .feature-item:last-child { border-right:none; }
+  .feature-icon { font-size:1.8rem; margin-bottom:0.8rem; }
+  .feature-title { font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--gold); margin-bottom:0.4rem; }
+  .feature-desc { font-size:0.8rem; color:rgba(255,255,255,0.55); line-height:1.6; }
+
+  /* HOME INTRO */
+  .home-intro { background:var(--off-white); display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
+  .intro-img { position:relative; height:520px; overflow:hidden; }
+  .intro-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.6s ease; }
+  .intro-img:hover img { transform:scale(1.04); }
+  .intro-badge { position:absolute; bottom:-1.5rem; right:-1.5rem; background:var(--navy); padding:1.5rem 2rem; text-align:center; z-index:2; }
+  .badge-num { font-family:'Cormorant Garamond',serif; font-size:2.5rem; font-weight:300; color:var(--gold); display:block; }
+  .badge-text { font-size:0.7rem; color:rgba(255,255,255,0.6); letter-spacing:0.15em; text-transform:uppercase; }
+
+  /* DESTINATIONS - NO BORDERS/GAPS */
+  .destinations { background:var(--white); padding-bottom:0; }
+  .dest-grid-top { display:grid; grid-template-columns:repeat(3,1fr); margin-top:3rem; gap:0; }
+  .dest-grid-bottom { display:grid; grid-template-columns:repeat(2,1fr); gap:0; }
+  .dest-card { position:relative; overflow:hidden; height:360px; cursor:pointer; }
+  .dest-grid-bottom .dest-card { height:300px; }
+  .dest-card img { width:100%; height:100%; object-fit:cover; transition:transform 0.6s ease; display:block; }
+  .dest-card:hover img { transform:scale(1.07); }
+  .dest-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(7,20,41,0.88) 0%,rgba(7,20,41,0.1) 55%,transparent 100%); display:flex; flex-direction:column; justify-content:flex-end; padding:2rem; }
+  .dest-name { font-family:'Cormorant Garamond',serif; font-size:1.8rem; color:var(--white); font-weight:400; }
+  .dest-tag { font-size:0.72rem; color:var(--gold); letter-spacing:0.15em; text-transform:uppercase; margin-top:0.3rem; }
+
+  /* REVIEWS */
+  .reviews-section { background:var(--off-white); padding:5rem 8%; }
+  .reviews-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; margin-top:3rem; }
+  .review-card { background:var(--navy); padding:2.5rem; border-bottom:3px solid var(--gold); }
+  .review-stars { color:var(--gold); font-size:0.9rem; margin-bottom:1.2rem; }
+  .review-quote { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-style:italic; color:var(--white); line-height:1.65; margin-bottom:1.5rem; }
+  .review-divider { width:30px; height:1px; background:var(--gold); margin-bottom:1.2rem; }
+  .review-author { font-size:0.8rem; color:rgba(255,255,255,0.55); }
+  .review-author strong { color:var(--gold-light); display:block; font-size:0.88rem; margin-bottom:0.2rem; font-style:normal; }
+
+  /* SAILING HOLIDAYS */
+  #products { padding-top:8rem; background:var(--white); }
+  .product-content { padding:0 8% 6rem; }
+  .product-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:5rem; align-items:start; }
+  .product-text p { font-size:1rem; line-height:1.9; color:var(--text-light); margin-bottom:1.4rem; font-weight:300; }
+  .product-text h3 { font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--navy); margin:2rem 0 1rem; }
+  .product-sidebar { position:sticky; top:7rem; }
+  .sidebar-card { background:var(--navy); padding:2.5rem; border:1px solid var(--border); }
+  .sidebar-card h4 { font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--gold); margin-bottom:1.5rem; }
+  .sidebar-feature { display:flex; gap:1rem; margin-bottom:1.2rem; align-items:flex-start; }
+  .sf-icon { font-size:1.2rem; flex-shrink:0; }
+  .sf-text { font-size:0.85rem; color:rgba(255,255,255,0.72); line-height:1.6; }
+  .sf-label { color:var(--white); font-weight:500; display:block; margin-bottom:0.2rem; }
+  .sidebar-cta { width:100%; background:var(--gold); color:var(--navy); padding:1rem; font-size:0.82rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:600; border:none; cursor:pointer; margin-top:2rem; transition:all 0.25s; }
+  .sidebar-cta:hover { background:var(--gold-light); }
+  .product-gallery { display:grid; grid-template-columns:1fr 1fr; gap:0; margin-top:4rem; }
+  .product-gallery img { width:100%; height:280px; object-fit:cover; display:block; }
+  .product-gallery img:first-child { grid-column:span 2; height:420px; }
+
+  /* ABOUT (CSR) */
+  #about { padding-top:8rem; background:var(--off-white); }
+  .about-content { padding:0 8% 6rem; }
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:start; margin-bottom:4rem; }
+  .about-text p { font-size:1rem; line-height:1.9; color:var(--text-light); margin-bottom:1.4rem; font-weight:300; }
+  .about-text h3 { font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--navy); margin:2rem 0 1rem; }
+  .csr-img-grid { display:grid; grid-template-columns:1fr 1fr; gap:0; }
+  .csr-img-grid img { width:100%; object-fit:cover; display:block; }
+  .csr-img-grid img:nth-child(1) { height:300px; grid-column:span 2; }
+  .csr-img-grid img:nth-child(2),.csr-img-grid img:nth-child(3) { height:200px; }
+
+  /* 4Ps - coloured cards */
+  .pillars { display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:4rem; }
+  .pillar-card { padding:2.5rem 2rem; border-top:4px solid var(--gold); }
+  .pillar-card:nth-child(1) { background:#0d1f3c; }
+  .pillar-card:nth-child(2) { background:#1a3a5c; }
+  .pillar-card:nth-child(3) { background:#0f2942; }
+  .pillar-card:nth-child(4) { background:#162d4a; }
+  .pillar-icon { font-size:2rem; margin-bottom:1rem; }
+  .pillar-title { font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--gold); margin-bottom:0.8rem; }
+  .pillar-text { font-size:0.85rem; color:rgba(255,255,255,0.7); line-height:1.7; }
+
+  /* BLOG */
+  #blog { padding-top:8rem; background:var(--white); }
+  .blog-content { padding:0 8% 6rem; max-width:860px; margin:0 auto; }
+  .blog-meta { display:flex; gap:1.5rem; margin-bottom:2.5rem; font-size:0.78rem; color:var(--text-light); letter-spacing:0.1em; text-transform:uppercase; padding-bottom:1.5rem; border-bottom:1px solid rgba(0,0,0,0.1); flex-wrap:wrap; }
+  .blog-article h2 { font-family:'Cormorant Garamond',serif; font-size:1.8rem; color:var(--navy); margin:2.5rem 0 1rem; font-weight:500; }
+  .blog-article p { font-size:1rem; line-height:1.95; color:var(--text-light); margin-bottom:1.5rem; font-weight:300; }
+  .blog-img { width:100%; height:380px; object-fit:cover; margin:2.5rem 0; display:block; }
+  .pull-quote { border-left:3px solid var(--gold); padding:1.5rem 2rem; margin:2.5rem 0; background:var(--off-white); }
+  .pull-quote p { font-family:'Cormorant Garamond',serif; font-size:1.35rem; font-style:italic; color:var(--navy); line-height:1.5; margin:0 !important; }
+  .keyword-tag { display:inline-block; background:rgba(201,168,76,0.12); color:var(--gold); padding:0.25rem 0.8rem; font-size:0.75rem; letter-spacing:0.1em; margin:0.2rem; border:1px solid rgba(201,168,76,0.3); }
+  .blog-keywords { margin:2rem 0; }
+  .blog-keywords p { font-size:0.8rem; color:var(--text-light); margin-bottom:0.6rem; }
+  .blog-cta-box { background:var(--navy); padding:3rem; margin-top:3rem; text-align:center; border:1px solid var(--border); }
+  .blog-cta-box p { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-style:italic; color:var(--white); margin-bottom:1.5rem; line-height:1.5; }
+
+  /* FAQ */
+  #faq { padding-top:8rem; background:var(--off-white); }
+  .faq-content { padding:0 8% 6rem; max-width:860px; }
+  .faq-item { background:var(--white); margin-bottom:1rem; border:1px solid rgba(0,0,0,0.07); overflow:hidden; }
+  .faq-question { width:100%; text-align:left; padding:1.4rem 2rem; background:none; border:none; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--navy); font-weight:500; transition:background 0.2s; }
+  .faq-question:hover { background:rgba(201,168,76,0.05); }
+  .faq-icon { font-size:1.2rem; color:var(--gold); transition:transform 0.3s; flex-shrink:0; margin-left:1rem; }
+  .faq-item.open .faq-icon { transform:rotate(45deg); }
+  .faq-answer { max-height:0; overflow:hidden; transition:max-height 0.4s ease,padding 0.3s ease; padding:0 2rem; }
+  .faq-item.open .faq-answer { max-height:300px; padding:0 2rem 1.6rem; }
+  .faq-answer p { font-size:0.95rem; color:var(--text-light); line-height:1.8; font-weight:300; }
+  .faq-chat { background:var(--navy); padding:2.5rem 3rem; margin-top:3rem; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border); flex-wrap:wrap; gap:1.5rem; }
+  .faq-chat-text h3 { font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--white); margin-bottom:0.4rem; }
+  .faq-chat-text p { font-size:0.88rem; color:rgba(255,255,255,0.6); }
+  .faq-chat-btns { display:flex; gap:1rem; flex-wrap:wrap; }
+  .chat-btn { padding:0.8rem 1.6rem; font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:600; cursor:pointer; border:none; transition:all 0.25s; text-decoration:none; display:inline-block; }
+  .chat-btn-gold { background:var(--gold); color:var(--navy); }
+  .chat-btn-gold:hover { background:var(--gold-light); }
+  .chat-btn-outline { background:transparent; color:var(--white); border:1px solid rgba(255,255,255,0.4); }
+  .chat-btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+
+  /* CONTACT */
+  #contact { padding-top:8rem; background:var(--navy); }
+  .contact-body { padding:0 8% 6rem; display:grid; grid-template-columns:1fr 1fr; gap:5rem; }
+  .contact-detail { display:flex; gap:1.2rem; margin-bottom:2rem; align-items:flex-start; }
+  .cd-icon { font-size:1.4rem; color:var(--gold); flex-shrink:0; }
+  .cd-text { color:rgba(255,255,255,0.7); font-size:0.9rem; line-height:1.7; }
+  .cd-label { color:var(--white); font-weight:500; display:block; margin-bottom:0.2rem; }
+  .form-group { margin-bottom:1.3rem; }
+  .form-group label { display:block; font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:0.5rem; }
+  .form-group input,.form-group textarea,.form-group select { width:100%; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); color:var(--white); padding:0.9rem 1.1rem; font-family:'Jost',sans-serif; font-size:0.9rem; transition:border-color 0.2s; outline:none; }
+  .form-group input:focus,.form-group textarea:focus,.form-group select:focus { border-color:var(--gold); }
+  .form-group textarea { height:120px; resize:vertical; }
+  .form-group select option { background:var(--navy); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .form-submit { width:100%; background:var(--gold); color:var(--navy); padding:1rem; font-size:0.82rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:600; border:none; cursor:pointer; margin-top:0.5rem; transition:all 0.25s; }
+  .form-submit:hover { background:var(--gold-light); transform:translateY(-2px); }
+
+  /* FOOTER */
+  footer { background:var(--deep-navy); padding:4rem 8% 2rem; border-top:1px solid var(--border); }
+  .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+  .footer-brand p { font-size:0.85rem; color:rgba(255,255,255,0.45); line-height:1.7; max-width:280px; margin-top:1rem; }
+  .footer-col h5 { font-size:0.72rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:1.2rem; font-weight:500; }
+  .footer-col a { display:block; color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.85rem; margin-bottom:0.6rem; transition:color 0.2s; cursor:pointer; }
+  .footer-col a:hover { color:var(--white); }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,0.08); padding-top:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-bottom p { font-size:0.78rem; color:rgba(255,255,255,0.3); }
+
+  /* RESPONSIVE TABLET */
+  @media (max-width:900px) {
+    .nav-links { display:none; }
+    .hamburger { display:flex; }
+    .features-strip { grid-template-columns:repeat(2,1fr); }
+    .feature-item:nth-child(2) { border-right:none; }
+    .feature-item:nth-child(3) { border-top:1px solid var(--border); }
+    .feature-item:nth-child(4) { border-top:1px solid var(--border); border-right:none; }
+    .home-intro { grid-template-columns:1fr; gap:3rem; }
+    .intro-img { height:380px; }
+    .dest-grid-top { grid-template-columns:1fr 1fr; }
+    .reviews-grid { grid-template-columns:1fr 1fr; gap:1.5rem; }
+    .product-grid { grid-template-columns:1fr; }
+    .product-sidebar { position:static; margin-top:2rem; }
+    .about-grid { grid-template-columns:1fr; }
+    .pillars { grid-template-columns:repeat(2,1fr); }
+    .contact-body { grid-template-columns:1fr; gap:3rem; }
+    .footer-grid { grid-template-columns:1fr 1fr; gap:2rem; }
+    .faq-chat { flex-direction:column; }
+  }
+
+  /* RESPONSIVE MOBILE */
+  @media (max-width:600px) {
+    section { padding:4rem 5%; }
+    .page-hero { height:42vh; margin-bottom:2.5rem; }
+    .hero-content { padding:0 5%; padding-top:5rem; }
+    .hero-sub { display:none; }
+    .hero-btns { flex-direction:column; }
+    .btn-primary,.btn-outline { text-align:center; width:100%; max-width:280px; }
+    .hero-arrow { display:none; }
+    .features-strip { grid-template-columns:1fr 1fr; padding:2rem 5%; }
+    .feature-item { padding:1.2rem; border-right:none !important; border-bottom:1px solid var(--border); }
+    .feature-item:nth-child(odd) { border-right:1px solid var(--border) !important; }
+    .feature-item:nth-last-child(-n+2) { border-bottom:none; }
+    .home-intro { padding:4rem 5%; gap:2rem; }
+    .intro-img { height:280px; }
+    .intro-badge { padding:1rem; bottom:-0.5rem; right:0; }
+    .badge-num { font-size:1.8rem; }
+    .dest-grid-top { grid-template-columns:1fr; }
+    .dest-card { height:240px !important; }
+    .dest-grid-bottom { grid-template-columns:1fr; }
+    .reviews-grid { grid-template-columns:1fr; }
+    .product-content { padding:0 5% 4rem; }
+    .product-gallery { grid-template-columns:1fr; }
+    .product-gallery img:first-child { grid-column:span 1; height:250px; }
+    .product-gallery img { height:200px; }
+    .about-content { padding:0 5% 4rem; }
+    .csr-img-grid { grid-template-columns:1fr; }
+    .csr-img-grid img:nth-child(1) { grid-column:span 1; height:220px; }
+    .csr-img-grid img:nth-child(2),.csr-img-grid img:nth-child(3) { height:180px; }
+    .pillars { grid-template-columns:1fr; }
+    .blog-content { padding:0 5% 4rem; }
+    .blog-img { height:220px; margin:1.5rem 0; }
+    .pull-quote { padding:1rem 1.2rem; }
+    .pull-quote p { font-size:1.1rem; }
+    .blog-cta-box { padding:2rem 1.5rem; }
+    .faq-content { padding:0 5% 4rem; }
+    .faq-question { padding:1.2rem; font-size:1rem; }
+    .faq-answer { padding:0 1.2rem; }
+    .faq-item.open .faq-answer { padding:0 1.2rem 1.2rem; }
+    .faq-chat { padding:2rem; }
+    .faq-chat-btns { width:100%; justify-content:center; }
+    .contact-body { padding:0 5% 4rem; }
+    .form-row { grid-template-columns:1fr; }
+    .footer-grid { grid-template-columns:1fr; gap:2rem; }
+    .footer-bottom { flex-direction:column; text-align:center; }
+    .blog-meta { gap:0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <span class="nav-logo" onclick="showPage('home')">TM <span>Travel</span></span>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')">Home</a></li>
+    <li><a onclick="showPage('products')">Sailing Holidays</a></li>
+    <li><a onclick="showPage('about')">About Us</a></li>
+    <li><a onclick="showPage('blog')">Blog</a></li>
+    <li><a onclick="showPage('faq')">FAQ</a></li>
+    <li><a onclick="showPage('contact')" class="nav-cta">Book Now</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a onclick="showPage('home');closeMenu()">Home</a>
+  <a onclick="showPage('products');closeMenu()">Sailing Holidays</a>
+  <a onclick="showPage('about');closeMenu()">About Us</a>
+  <a onclick="showPage('blog');closeMenu()">Blog</a>
+  <a onclick="showPage('faq');closeMenu()">FAQ</a>
+  <a onclick="showPage('contact');closeMenu()">Book Now</a>
+</div>
+
+<!-- ══════════ HOME ══════════ -->
+<div id="home" class="page active">
+  <div class="hero-wrap">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">TM Travel · Flotilla Sailing · Greek Islands</p>
+      <h1 class="hero-title">What if the best holiday<br>you ever took had <em>no itinerary?</em></h1>
+      <p class="hero-sub">Flotilla sailing through the Greek islands — designed for those who have traded rush for rhythm, noise for silence, and schedules for sunsets.</p>
+      <div class="hero-btns">
+        <a class="btn-primary" onclick="showPage('products')">Explore Our Holidays</a>
+        <a class="btn-outline" onclick="showPage('about')">Our Story</a>
+      </div>
+    </div>
+    <div class="hero-arrow"><div class="arrow-line"></div><div class="arrow-chevron"></div></div>
+  </div>
+
+  <div class="features-strip">
+    <div class="feature-item"><div class="feature-icon">⛵</div><div class="feature-title">Small Groups</div><div class="feature-desc">Intimate flotillas of 6–10 yachts for a personal experience</div></div>
+    <div class="feature-item"><div class="feature-icon">🧭</div><div class="feature-title">Expert Lead Crew</div><div class="feature-desc">Local knowledge, sailing support, and genuine hospitality</div></div>
+    <div class="feature-item"><div class="feature-icon">🌿</div><div class="feature-title">Sustainable Sailing</div><div class="feature-desc">Responsible routes that protect the Ionian ecosystem</div></div>
+    <div class="feature-item"><div class="feature-icon">🍋</div><div class="feature-title">Authentic Greece</div><div class="feature-desc">Local tavernas, hidden harbours, real community connections</div></div>
+  </div>
+
+  <section class="home-intro">
+    <div class="intro-img">
+      <img src="images/intro-couple.jpg" alt="Couple enjoying sailing in the Greek islands">
+      <div class="intro-badge"><span class="badge-num">15+</span><span class="badge-text">Years of Experience</span></div>
+    </div>
+    <div>
+      <p class="section-label">Who We Are</p>
+      <h2 class="section-title">Travel slower.<br>Feel <em>more.</em></h2>
+      <div class="gold-divider"></div>
+      <p style="font-size:1rem;line-height:1.85;color:var(--text-light);font-weight:300;margin-bottom:1rem">At TM Travel, we believe the most memorable journeys are not built around crowded attractions or packed itineraries. They are built around meaningful encounters, local knowledge, and the freedom to explore at a different pace.</p>
+      <p style="font-size:1rem;line-height:1.85;color:var(--text-light);font-weight:300">Our flotilla sailing holidays are designed for couples who have already ticked the obvious boxes and are now looking for something that genuinely moves them — through the Ionian Sea, through authentic Greek island life, and through the rare pleasure of having nowhere else to be.</p>
+      <a class="btn-primary" style="margin-top:2rem;display:inline-block" onclick="showPage('about')">Learn Our Story</a>
+    </div>
+  </section>
+
+  <!-- DESTINATIONS — 5 islands, no borders, no gaps -->
+  <section class="destinations">
+    <p class="section-label">Where We Sail</p>
+    <h2 class="section-title">Our <em>Destinations</em></h2>
+    <div class="dest-grid-top">
+      <!-- Lefkada: white Greek village by water -->
+      <div class="dest-card">
+        <img src="images/lefkada.jpg" alt="Lefkada Iceland dramatic landscape">
+        <div class="dest-overlay"><div class="dest-name">Lefkada</div><div class="dest-tag">Ionian Islands · Crystal Waters</div></div>
+      </div>
+      <!-- Kefalonia: harbour with boats -->
+      <div class="dest-card">
+        <img src="images/kefalonia.jpg" alt="Kefalonia Iceland waterfall">
+        <div class="dest-overlay"><div class="dest-name">Kefalonia</div><div class="dest-tag">Hidden Coves · Local Culture</div></div>
+      </div>
+      <!-- Ithaca: Greek harbour village -->
+      <div class="dest-card">
+        <img src="images/ithaca.jpg" alt="Ithaca Iceland mountains">
+        <div class="dest-overlay"><div class="dest-name">Ithaca</div><div class="dest-tag">Ancient Legend · Slow Living</div></div>
+      </div>
+    </div>
+    <div class="dest-grid-bottom">
+      <!-- Meganisi: secluded Greek bay -->
+      <div class="dest-card">
+        <img src="images/meganisi.jpg" alt="Meganisi Iceland glacier lagoon">
+        <div class="dest-overlay"><div class="dest-name">Meganisi</div><div class="dest-tag">Secluded Bays · Off the Beaten Track</div></div>
+      </div>
+      <!-- Kalamos: calm Ionian waters -->
+      <div class="dest-card">
+        <img src="images/kalamos.jpg" alt="Kalamos Iceland northern lights">
+        <div class="dest-overlay"><div class="dest-name">Kalamos</div><div class="dest-tag">Unspoiled Nature · Tranquil Waters</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="reviews-section">
+    <p class="section-label">Guest Experiences</p>
+    <h2 class="section-title">What Our <em>Guests Say</em></h2>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">"We have travelled to many places over the years, but nothing has come close to this. The pace, the people, the sea — it gave us exactly what we didn't know we needed. We have already booked again for next September."</p>
+        <div class="review-divider"></div>
+        <div class="review-author"><strong>Caroline & Thomas</strong>Amsterdam, The Netherlands · Lefkada & Meganisi, 2024</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">"After years of resort holidays, we wanted something different. TM Travel delivered beyond our expectations. The lead crew felt like friends by day three, and the local tavernas they recommended were simply unforgettable."</p>
+        <div class="review-divider"></div>
+        <div class="review-author"><strong>Helena & Marc</strong>Brussels, Belgium · Kefalonia & Ithaca, 2024</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">"Neither of us had sailed before. By day two, we were navigating on our own. By day five, we were wondering why we had ever stayed in hotels. This is the kind of travel that actually changes something in you."</p>
+        <div class="review-divider"></div>
+        <div class="review-author"><strong>Julia & David</strong>Hamburg, Germany · Ithaca & Kalamos, 2023</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════ SAILING HOLIDAYS ══════════ -->
+<div id="products" class="page">
+  <!-- Hero: sailing boat on open water -->
+  <div class="page-hero">
+    <img src="images/products-hero.jpg" alt="Flotilla sailing in the Greek islands">
+    <div class="page-hero-overlay">
+      <div><p class="section-label" style="color:var(--gold-light)">Our Holiday</p><h2 class="section-title" style="color:var(--white)">Flotilla Sailing<br><em style="color:var(--gold-light)">in the Greek Islands</em></h2></div>
+    </div>
+  </div>
+  <div class="product-content">
+    <div class="product-grid">
+      <div class="product-text">
+        <p class="section-label">The Experience</p>
+        <h2 class="section-title">Looking for a <em>#flotilla sailing holiday</em> in the <em>#Greek islands?</em></h2>
+        <div class="gold-divider"></div>
+        <p>Trade crowded resorts and rushed schedules for a slower way of travelling through the Greek islands. Our flotilla sailing experience is designed for couples seeking comfort, freedom, and meaningful moments at sea. Sail through the stunning <strong>#Ionian Sea</strong>, discover quiet harbours, and enjoy the perfect balance between independent travel and guided support — the essence of true <strong>#slow travel</strong>.</p>
+        <p>Each morning begins with a simple route briefing from the lead crew before you sail towards a new island at your own pace. Spend your afternoons swimming in crystal-clear bays, enjoying long lunches by the waterfront, or relaxing on deck beneath the Mediterranean sun. In the evenings, experience the unhurried warmth of Greek hospitality in traditional tavernas, where locals welcome you as part of their community while you share unforgettable sunsets beside the harbour. This is what an <strong>#authentic Greek experience</strong> truly feels like.</p>
+        <h3>Designed for You</h3>
+        <p>Designed especially for travellers in their forties and beyond, this <strong>#couples sailing holiday</strong> offers an escape from busy routines and family-focused holidays. Instead of strict timetables and crowded tourist attractions, flotilla sailing creates space for calm mornings, genuine conversations, and travel experiences that feel personal and refreshing.</p>
+        <p>Whether you have previous sailing experience or are completely new to life on the water, our experienced crew ensures a safe, comfortable, and welcoming journey throughout. This is a perfect <strong>#sailing holiday for beginners</strong> and seasoned sailors alike. More than a holiday, flotilla sailing is a chance to truly reconnect — with the open sea, with the rich culture of Greece, and most importantly, with each other.</p>
+        <p>Our flotillas are also rooted in the principles of <strong>#sustainable sailing</strong>. We keep our groups small, support local businesses, and protect the beautiful coastal ecosystems that make these islands worth visiting. You travel well, and you travel responsibly.</p>
+        <p><em>Discover this corner of the Mediterranean the way it was meant to be seen.</em></p>
+      </div>
+      <div class="product-sidebar">
+        <div class="sidebar-card">
+          <h4>What's Included</h4>
+          <div class="sidebar-feature"><span class="sf-icon">⛵</span><div class="sf-text"><span class="sf-label">Yacht & Berth</span>Your own sailing yacht for the full duration</div></div>
+          <div class="sidebar-feature"><span class="sf-icon">🧭</span><div class="sf-text"><span class="sf-label">Lead Crew Support</span>Expert crew available throughout the journey</div></div>
+          <div class="sidebar-feature"><span class="sf-icon">📍</span><div class="sf-text"><span class="sf-label">Daily Briefings</span>Route planning and local recommendations each morning</div></div>
+          <div class="sidebar-feature"><span class="sf-icon">🌿</span><div class="sf-text"><span class="sf-label">Sustainability Guide</span>Pre-departure eco-briefing and responsible sailing guide</div></div>
+          <div class="sidebar-feature"><span class="sf-icon">🤝</span><div class="sf-text"><span class="sf-label">Local Connections</span>Curated recommendations for authentic local dining</div></div>
+          <button class="sidebar-cta" onclick="showPage('contact')">Book Your Flotilla →</button>
+        </div>
+      </div>
+    </div>
+    <!-- Gallery: all sailing/Greek related -->
+    <div class="product-gallery">
+      <img src="images/gallery-1.jpg" alt="Sailing the Ionian Sea">
+      <img src="images/gallery-2.jpg" alt="Greek island crystal waters">
+      <img src="images/gallery-3.jpg" alt="Greek harbour evening">
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ABOUT (CSR) ══════════ -->
+<div id="about" class="page">
+  <!-- Hero: Greek coast with local feel -->
+  <div class="page-hero">
+    <img src="images/about-hero.jpg" alt="Greek island community">
+    <div class="page-hero-overlay">
+      <div><p class="section-label" style="color:var(--gold-light)">Who We Are</p><h2 class="section-title" style="color:var(--white)">Travel with <em style="color:var(--gold-light)">Purpose</em></h2></div>
+    </div>
+  </div>
+  <div class="about-content">
+    <div class="about-grid">
+      <div class="about-text">
+        <p class="section-label">Our Story & CSR Policy</p>
+        <h2 class="section-title">About <em>TM Travel</em></h2>
+        <div class="gold-divider"></div>
+        <p>The conversation usually starts on the third or fourth day. By then, most guests have stopped checking emails, forgotten what day of the week it is, and settled into the slower rhythm of life at sea. Somewhere between two small harbours, over dinner at a family-run taverna, they realise something has changed. The rush of everyday life has faded, replaced by something increasingly rare for discerning travellers: the opportunity to slow down and genuinely connect with a place.</p>
+        <p>That feeling is at the heart of every flotilla holiday we create at TM Travel. Our flotilla holidays are specifically designed for independent, experience-driven travellers who value quality, authenticity, and meaningful exploration over crowded itineraries. We combine small-group sailing with expert local guidance to create immersive travel experiences that support communities, protect the environment, and leave a lasting impression rather than a heavy footprint.</p>
+        <h3>Our Goal</h3>
+        <p>Our goal is straightforward: to help travellers experience Greece more slowly, support local communities more directly, and leave a lighter footprint on the places they visit. By limiting group sizes and routing flotillas through lesser-known destinations, we reduce pressure on overcrowded tourist areas while creating more personal, rewarding experiences for our guests.</p>
+        <h3>Our Approach and USPs</h3>
+        <p>What sets TM Travel apart is our combination of small-group flotilla sailing, experienced lead crews, and deep local knowledge. Our lead crews do far more than provide sailing support. They recommend independent restaurants, guide guests toward authentic local experiences, and know which anchorages to avoid to protect fragile marine habitats. This approach reflects our core values: authenticity, local connection, and responsible exploration.</p>
+        <h3>Supporting Local Communities</h3>
+        <p>Supporting local communities is one of the foundations of our approach. Throughout each journey, guests are encouraged to dine at family-owned tavernas, shop at local markets, and support small harbour businesses. These choices directly contribute to the livelihoods of the communities we visit. For many travellers, these local encounters become the highlight of the entire holiday.</p>
+        <h3>Protecting the Marine Environment</h3>
+        <p>Flotilla sailing depends on healthy coastal ecosystems. Before departure, guests receive practical guidance on reducing waste, respecting marine life, and sailing responsibly. Our approach is informed by the <strong>Ionian Environment Foundation (IEF)</strong>, which promotes sustainable boating and protection of Posidonia seagrass meadows (Ionian Environment Foundation, 2023), and <strong>iSea</strong>, an environmental NGO working to preserve marine ecosystems across Greece (iSea, 2024). Their work directly informs how we brief guests and plan our routes.</p>
+        <h3>Honesty Over Perfection</h3>
+        <p>We believe honesty matters more than perfect sustainability claims. Sailing holidays have an environmental impact, and we do not pretend otherwise. Rather than making broad promises we cannot keep, we focus on practical, measurable actions: careful route planning, strong local partnerships, and meaningful guest education. We draw a clear line between genuine sustainability efforts and marketing — our CSR policy is built on what we actually do, not how we want to be perceived.</p>
+        <h3>Vision for the Future</h3>
+        <p>Looking ahead, TM Travel aims to expand its network of local partners, deepen collaboration with marine conservation organisations, and develop more structured pre-departure sustainability briefings for guests. Our long-term goal is to ensure that every flotilla route creates measurable value — not only for the travellers on board, but also for the communities that welcome them and the ecosystems they sail through.</p>
+        <p><em>Long after the sailing ends, we hope our guests remember the people they met, the places that welcomed them, and the feeling of having travelled through Greece rather than simply passing by.</em></p>
+      </div>
+      <!-- CSR images: local people, taverna, harbour -->
+      <div>
+        <div class="csr-img-grid">
+          <img src="images/csr-1.jpg" alt="Tourists and locals sharing a meal at a Greek taverna">
+          <img src="images/csr-2.jpg" alt="Local Greek family restaurant by the harbour">
+          <img src="images/gallery-3.jpg" alt="Greek harbour community sustainable tourism">
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-light);margin-top:1rem;font-style:italic">Supporting local tavernas, communities, and marine ecosystems across the Ionian Islands.</p>
+      </div>
+    </div>
+    <!-- 4Ps - coloured navy cards -->
+    <div class="pillars">
+      <div class="pillar-card"><div class="pillar-icon">🌍</div><div class="pillar-title">Planet</div><div class="pillar-text">Protecting Posidonia seagrass meadows, reducing waste, and sailing responsibly through fragile coastal ecosystems.</div></div>
+      <div class="pillar-card"><div class="pillar-icon">🤝</div><div class="pillar-title">People</div><div class="pillar-text">Supporting local tavernas, harbour businesses, and island communities with every flotilla route we plan.</div></div>
+      <div class="pillar-card"><div class="pillar-icon">💰</div><div class="pillar-title">Profit</div><div class="pillar-text">Building a sustainable business that benefits travellers, local partners, and the broader Ionian economy.</div></div>
+      <div class="pillar-card"><div class="pillar-icon">🎯</div><div class="pillar-title">Purpose</div><div class="pillar-text">Creating meaningful travel experiences that leave guests — and destinations — genuinely better than before.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ BLOG ══════════ -->
+<div id="blog" class="page">
+  <!-- Hero: Greek harbour at golden hour -->
+  <div class="page-hero">
+    <img src="images/blog-hero.jpg" alt="Greek harbour at golden hour">
+    <div class="page-hero-overlay">
+      <div><p class="section-label" style="color:var(--gold-light)">The TM Travel Journal</p><h2 class="section-title" style="color:var(--white)">Finding Peace<br><em style="color:var(--gold-light)">Between Greek Islands</em></h2></div>
+    </div>
+  </div>
+  <div class="blog-content">
+    <div class="blog-meta">
+      <span>✍️ TM Travel Team</span>
+      <span>📅 June 2025</span>
+      <span>⏱ 4 min read</span>
+      <span>🏷 Flotilla · Slow Travel</span>
+    </div>
+    <div class="blog-keywords">
+      <p>Keywords in this article:</p>
+      <span class="keyword-tag">#flotilla sailing</span>
+      <span class="keyword-tag">#Greek islands</span>
+      <span class="keyword-tag">#Ionian Sea</span>
+      <span class="keyword-tag">#slow travel</span>
+      <span class="keyword-tag">#authentic Greek experience</span>
+      <span class="keyword-tag">#couples sailing holiday</span>
+    </div>
+    <div class="blog-article">
+      <h2>The Moment Everything Slowed Down</h2>
+      <p>What if the best holiday you ever took had no itinerary, no hotel lobby, and no alarm clock? As someone in my forties looking for a slower and more meaningful way to travel, I felt the warm Greek breeze against my skin as soon as I arrived at the harbour. Standing on the deck, with only the sea and the soft sound of ropes touching the mast around me, my mind became calmer than it had been in weeks. The sea was a mirror, reflecting not just sunlight but everything I had been too busy to notice. At that moment, <strong>#flotilla sailing</strong> felt like an escape from stress and routine.</p>
+
+      <!-- Blog image 1: Greek harbour -->
+      <img class="blog-img" src="images/blog-1.jpg" alt="Greek island harbour with boats">
+
+      <h2>A Rhythm Unlike Any Other</h2>
+      <p>Before I booked, I almost cancelled. The idea of navigating open water with no fixed hotel felt more daunting than exciting. However, the experience was completely different from what I expected. Every morning, the lead crew explained the sailing route before we moved towards the next island. That simple, steady structure created calm, comfort, and complete freedom. How often do we give ourselves permission to travel without rushing from one attraction to the next? Reflecting on my own customer journey, from researching routes online to stepping onto the yacht, I realised that flotilla sailing creates reassurance at every stage of the customer experience.</p>
+
+      <div class="pull-quote"><p>"How often do we give ourselves permission to travel without rushing from one attraction to the next?"</p></div>
+
+      <h2>Time Stands Still on the Ionian Sea</h2>
+      <p>One afternoon remains unforgettable. The yacht moved gently through the <strong>#Ionian Sea</strong> while the sails slowly filled with wind. Around us, there was only blue water, distant islands, and waves following the boat. No traffic. No crowded streets. No constant notifications. I felt as though I could have stayed on that water forever, as if time itself had quietly agreed to slow down. Later, lights from a waterfront taverna appeared beside the harbour. Sitting near the sea with fresh seafood and quiet music made Greece feel alive, not just like a destination on a map. The warmth of Greek hospitality — unhurried, generous, and genuine — felt worlds apart from the rushed atmosphere of many modern resorts.</p>
+
+      <!-- Blog image 2: sailing on open Ionian water -->
+      <img class="blog-img" src="images/blog-2.jpg" alt="Sailing on the Ionian Sea">
+
+      <h2>Strangers Become Sailors</h2>
+      <p>What surprised me most was the connection between people. Although many travellers arrived as strangers, the water naturally brought everyone together. Conversations started easily after long sailing days, especially while sharing stories about hidden beaches and favourite island stops. In many ways, the flotilla became a small floating community moving together between the <strong>#Greek islands</strong>.</p>
+
+      <h2>Why Flotilla Sailing Is Different</h2>
+      <p>Researching flotilla sailing and customer journeys helped me understand why this holiday feels different from traditional tourism. Many modern travellers seek more than luxury or beautiful scenery. A growing number of travellers, particularly those in their forties and beyond, free from the demands of family holidays, seek <strong>#slow travel</strong> — slow mornings, tranquil surroundings, and freedom on their own terms. Not only does flotilla sailing combine adventure and freedom, but it also gives something rarer: the space to be present. What it truly offers is the chance to experience the <strong>#authentic Greek experience</strong> through small harbours and the serene rhythm of island life. Ready to trade everyday noise for waves and wind? Step aboard, experience this <strong>#couples sailing holiday</strong> for yourself, and discover the Greek islands the way they were meant to be seen.</p>
+    </div>
+    <div class="blog-cta-box">
+      <p>"Discover this corner of the Mediterranean the way it was meant to be seen."</p>
+      <a class="btn-primary" onclick="showPage('contact')">Book Your Flotilla Experience →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ FAQ ══════════ -->
+<div id="faq" class="page">
+  <div class="page-hero">
+    <img src="images/faq-hero.jpg" alt="Flotilla sailing Greek islands FAQ">
+    <div class="page-hero-overlay">
+      <div><p class="section-label" style="color:var(--gold-light)">Got Questions?</p><h2 class="section-title" style="color:var(--white)">Frequently Asked <em style="color:var(--gold-light)">Questions</em></h2></div>
+    </div>
+  </div>
+  <div class="faq-content">
+    <p class="section-label">Everything You Need to Know</p>
+    <h2 class="section-title" style="margin-bottom:2.5rem">Before You <em>Set Sail</em></h2>
+    <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Do I need sailing experience to join a flotilla? <span class="faq-icon">+</span></button><div class="faq-answer"><p>No previous sailing experience is required. Our experienced lead crew is there to support you throughout the entire journey. They will guide you through the basics, help with manoeuvring in harbours, and are always on hand if you need assistance. Many of our guests are first-time sailors — and they often become the most enthusiastic by the end of the week.</p></div></div>
+    <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">How many yachts are in a flotilla group? <span class="faq-icon">+</span></button><div class="faq-answer"><p>Our flotillas consist of 6 to 10 yachts. We intentionally keep our groups small to ensure a more personal, intimate experience — both on the water and at anchor. This also means less impact on the local harbours and communities we visit.</p></div></div>
+    <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">What is included in the price? <span class="faq-icon">+</span></button><div class="faq-answer"><p>Your flotilla package includes the yacht and berth for the full duration, lead crew support throughout the journey, daily morning briefings with route planning and local recommendations, a pre-departure sustainability guide, and curated suggestions for local dining and experiences. Flights, food, and personal expenses are not included.</p></div></div>
+    <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">What is the best time of year to sail in Greece? <span class="faq-icon">+</span></button><div class="faq-answer"><p>The ideal sailing season in Greece runs from May to October. We recommend May–June and September–October for the best combination of warm weather, calm seas, and fewer crowds. July and August are the busiest months with stronger winds, though they are still excellent for sailing.</p></div></div>
+    <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Is this holiday suitable for couples with no sailing background? <span class="faq-icon">+</span></button><div class="faq-answer"><p>Absolutely. Our flotilla holidays are specifically designed with couples in mind — particularly those looking for a meaningful, unhurried experience away from family-focused resorts. No sailing background is needed. Our lead crew will ensure you feel confident and comfortable from day one.</p></div></div>
+    <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">How do I book a flotilla holiday? <span class="faq-icon">+</span></button><div class="faq-answer"><p>You can book directly through our Contact page or by emailing us at info@tmtravel.com. Our team will guide you through availability, route options, and what to expect. We recommend booking at least 3–4 months in advance, especially for peak season departures.</p></div></div>
+    <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">What should I pack for a flotilla sailing holiday? <span class="faq-icon">+</span></button><div class="faq-answer"><p>We recommend light comfortable clothing, non-slip boat shoes, a good sun hat and sunscreen, a light waterproof jacket for evening sailing, and a small soft bag rather than a hard suitcase. A full packing list will be sent to you after booking.</p></div></div>
+    <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">How does TM Travel approach sustainability? <span class="faq-icon">+</span></button><div class="faq-answer"><p>Sustainability is at the core of everything we do. We keep group sizes small, route our flotillas away from fragile ecosystems, and provide guests with a practical sustainability guide before departure. We work with the Ionian Environment Foundation and iSea, and actively encourage guests to support local businesses. We are honest about our impact and focus on actions we can genuinely measure and improve.</p></div></div>
+    <div class="faq-chat">
+      <div class="faq-chat-text"><h3>Still haven't found your answer?</h3><p>Our team is happy to help — call us, send an email, or leave a message below.</p></div>
+      <div class="faq-chat-btns">
+        <a href="tel:+31681185523" class="chat-btn chat-btn-gold">📞 Call Us</a>
+        <a class="chat-btn chat-btn-outline" onclick="showPage('contact')">✉️ Write to Us</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CONTACT ══════════ -->
+<div id="contact" class="page">
+  <div class="page-hero">
+    <img src="images/contact-hero.jpg" alt="Greek harbour contact TM Travel">
+    <div class="page-hero-overlay">
+      <div><p class="section-label" style="color:var(--gold-light)">Get in Touch</p><h2 class="section-title" style="color:var(--white)">Ready to <em style="color:var(--gold-light)">Set Sail?</em></h2></div>
+    </div>
+  </div>
+  <div class="contact-body">
+    <div>
+      <p class="section-label">Contact TM Travel</p>
+      <h2 class="section-title" style="color:var(--white)">We'd love to<br><em>hear from you</em></h2>
+      <div class="gold-divider"></div>
+      <p style="color:rgba(255,255,255,0.6);font-size:0.95rem;line-height:1.8;margin-bottom:2.5rem;font-weight:300">Whether you have a question about a specific flotilla route, want to discuss availability, or are ready to book — our team is here to help.</p>
+      <div class="contact-detail"><span class="cd-icon">📍</span><div class="cd-text"><span class="cd-label">Our Office</span>Pina Bauschplein 4<br>1095 PL, Amsterdam<br>The Netherlands</div></div>
+      <div class="contact-detail"><span class="cd-icon">📞</span><div class="cd-text"><span class="cd-label">Phone</span><a href="tel:+31681185523" style="color:inherit;text-decoration:none">+31 6 81 18 55 23</a></div></div>
+      <div class="contact-detail"><span class="cd-icon">✉️</span><div class="cd-text"><span class="cd-label">Email</span><a href="mailto:info@tmtravel.com" style="color:inherit;text-decoration:none">info@tmtravel.com</a></div></div>
+      <div class="contact-detail"><span class="cd-icon">🕐</span><div class="cd-text"><span class="cd-label">Office Hours</span>Monday – Friday: 09:00 – 17:30<br>Saturday: 10:00 – 14:00</div></div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);padding:2.5rem">
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);margin-bottom:1.5rem">Send Us a Message</h3>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="Your first name"></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Your last name"></div>
+      </div>
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="your@email.com"></div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+31 6 00 00 00 00"></div>
+      <div class="form-group"><label>I am interested in</label>
+        <select>
+          <option>Flotilla sailing holiday – Ionian Islands</option>
+          <option>General enquiry</option>
+          <option>Sustainability & CSR information</option>
+          <option>Group booking</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Your Message</label><textarea placeholder="Tell us about your ideal sailing holiday..."></textarea></div>
+      <button class="form-submit">Send Your Enquiry →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="nav-logo" onclick="showPage('home')" style="display:block;font-size:1.8rem">TM <span>Travel</span></span>
+      <p>Flotilla sailing holidays through the Greek islands — for those who travel to feel, not just to see.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Navigate</h5>
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('products')">Sailing Holidays</a>
+      <a onclick="showPage('about')">About Us</a>
+      <a onclick="showPage('blog')">Blog</a>
+      <a onclick="showPage('faq')">FAQ</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h5>Our Islands</h5>
+      <a>Lefkada</a><a>Kefalonia</a><a>Ithaca</a><a>Meganisi</a><a>Kalamos</a>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <a>Pina Bauschplein 4</a>
+      <a>1095 PL Amsterdam</a>
+      <a href="tel:+31681185523">+31 6 81 18 55 23</a>
+      <a href="mailto:info@tmtravel.com">info@tmtravel.com</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 TM Travel. All rights reserved. Amsterdam, The Netherlands.</p>
+    <p>Flotilla sailing holidays in the Greek Islands</p>
+  </div>
+</footer>
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top:0, behavior:'smooth' });
+    closeMenu();
+  }
+  function toggleMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobileNav').classList.remove('open');
+  }
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+</body>
+</html>
