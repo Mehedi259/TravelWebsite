@@ -1,15 +1,14 @@
 {
   "version": 2,
+  "name": "tm-travel-website",
   "builds": [
     {
       "src": "*.html",
       "use": "@vercel/static"
-    }
-  ],
-  "routes": [
+    },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "src": "images/**",
+      "use": "@vercel/static"
     }
   ]
 }
